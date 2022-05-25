@@ -10,6 +10,6 @@
 * Default config file path is `/srv/config.toml`
 * You can reload the state of the program by running `reload-state` inside the container, e.g.
 ```sh
-
+docker exec -it <container-id> reload-state
 ```
 
