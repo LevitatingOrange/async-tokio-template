@@ -2,7 +2,7 @@
 
 ## Invocation
 ```sh
-    cargo run -- --config-file=default_config.toml run
+cargo run -- --config-file=default_config.toml run
 ```
 
 ## Docker Image

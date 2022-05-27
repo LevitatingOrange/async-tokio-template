@@ -1,9 +1,19 @@
-ARG BASE_IMAGE=clux/muslrust:stable
-FROM ${BASE_IMAGE} AS builder
+ARG BUILD_IMAGE=clux/muslrust:stable
 
+FROM ${BUILD_IMAGE} AS chef
+RUN cargo install cargo-chef --locked
 WORKDIR /etc/src/
-ADD . ./
 
+FROM chef AS planner
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
+
+FROM chef AS builder
+# Speed up docker build by caching dependencies, see https://github.com/LukeMathWalker/cargo-chef
+COPY --from=planner /etc/src/recipe.json recipe.json
+RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path recipe.json
+
+COPY . .
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
 FROM alpine:latest
